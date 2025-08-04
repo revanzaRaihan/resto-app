@@ -34,10 +34,6 @@
                             </div>
                             @endforeach
                         </div>
-                        {{-- Pagination jika pakai paginate --}}
-                        {{-- <div class="mt-4">
-                            {{ $menus->links() }}
-                        </div> --}}
                     </div>
                 </div>
             </div>
