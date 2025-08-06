@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Item;
@@ -17,3 +18,5 @@ Route::get('/cart', function () {
 Route::get('/checkout', function () {
     return view('customer.checkout');
 })->name('checkout');
+
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
