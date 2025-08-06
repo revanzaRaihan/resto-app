@@ -12,11 +12,15 @@ Route::get('/', function () {
     $items = Item::all();
     return view('customer.menu', compact('items'));
 });
-Route::get('/cart', function () {
-    return view('customer.cart');
-})->name('cart');
+// Route::get('/cart', function () {
+//     return view('customer.cart');
+// })->name('cart');
 Route::get('/checkout', function () {
     return view('customer.checkout');
 })->name('checkout');
 
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+Route::get('/cart', [CartController::class, 'show'])->name('cart');
+
+Route::post('/cart/update/{id}', [CartController::class, 'updateQty'])->name('cart.update');
+Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
