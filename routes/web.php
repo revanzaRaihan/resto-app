@@ -1,14 +1,15 @@
 <?php
 
+use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MenuController;
-use App\Models\Menu;
+use App\Models\Item;
 
-Route::get('/menu', [MenuController::class, 'index']);
+
+Route::get('/menu', [ItemController::class, 'index']);
 
 Route::get('/', function () {
-    $menus = Menu::all();
-    return view('customer.menu', compact('menus'));
+    $items = Item::all();
+    return view('customer.menu', compact('items'));
 });
 Route::get('/cart', function () {
     return view('customer.cart');
@@ -16,4 +17,3 @@ Route::get('/cart', function () {
 Route::get('/checkout', function () {
     return view('customer.checkout');
 })->name('checkout');
-
