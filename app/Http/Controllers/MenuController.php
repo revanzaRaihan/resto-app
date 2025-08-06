@@ -7,8 +7,8 @@ use App\Models\Menu;
 class MenuController extends Controller
 {
     public function index()
-    {
-        $menus = Menu::all();
-        return view('customer.menu', compact('menus'));
-    }
+{
+    $menus = Menu::all();
+    return view('customer.menu', compact('menus'));
+}
 }

@@ -2,9 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
+use App\Models\Menu;
+
+Route::get('/menu', [MenuController::class, 'index']);
 
 Route::get('/', function () {
-    return view('customer.menu');
+    $menus = Menu::all();
+    return view('customer.menu', compact('menus'));
 });
 Route::get('/cart', function () {
     return view('customer.cart');
@@ -12,8 +16,4 @@ Route::get('/cart', function () {
 Route::get('/checkout', function () {
     return view('customer.checkout');
 })->name('checkout');
-
-// ...existing code...
-Route::get('/menu', [MenuController::class, 'index']);
-// ...existing code...
 

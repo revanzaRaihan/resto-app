@@ -17,6 +17,7 @@ return new class extends Migration
         $table->text('deskripsi');
         $table->decimal('harga', 10, 2); // contoh 99999999.99
         $table->timestamps();
+        $table->string('gambar')->nullable(); // Menambahkan kolom gambar yang nullable
     });
 }
     /**
