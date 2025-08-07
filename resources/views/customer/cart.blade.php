@@ -21,8 +21,7 @@
                                 <th scope="row">
                                     <div class="d-flex align-items-center">
                                         <img src="{{ $item['img'] ?? 'https://images.unsplash.com/photo-1591325418441-ff678baf78ef' }}"
-                                            class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;"
-                                            alt="">
+                                            class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
                                     </div>
                                 </th>
                                 <td>
@@ -34,11 +33,10 @@
                                 <td>
                                     <div class="input-group quantity mt-4" style="width: 100px;">
                                         <button type="button" class="btn btn-sm btn-minus rounded-circle bg-light border"
-                                            onclick="updateQty({{ $id }}, {{ max(1, $item['qty'] - 1) }})">
+                                            onclick="updateQty({{ $id }}, {{ $item['qty'] - 1 }})">
                                             <i class="fa fa-minus"></i>
                                         </button>
-                                        <input type="text" readonly
-                                            class="form-control form-control-sm text-center border-0"
+                                        <input type="text" readonly class="form-control form-control-sm text-center border-0"
                                             value="{{ $item['qty'] }}">
                                         <button type="button" class="btn btn-sm btn-plus rounded-circle bg-light border"
                                             onclick="updateQty({{ $id }}, {{ $item['qty'] + 1 }})">
@@ -115,6 +113,28 @@
 
     <script>
         function updateQty(id, qty) {
+            if (qty == null) {
+                fetch(`/cart/remove/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({}) // Jika butuh kirim data tambahan, isi di sini
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Berhasil
+                            console.log('Item removed');
+                            location.reload(); // Refresh halaman setelah berhasil menghapus item
+                            // Lakukan refresh atau update UI
+                        } else {
+                            // Gagal
+                            console.error('Failed to remove item');
+                        }
+                    })
+                return;
+            }
             $.ajax({
                 url: '/cart/update/' + id,
                 type: 'POST',
@@ -122,7 +142,7 @@
                     qty: qty,
                     _token: '{{ csrf_token() }}'
                 },
-                success: function() {
+                success: function () {
                     location.reload();
                 }
             });
