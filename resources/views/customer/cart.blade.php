@@ -33,22 +33,17 @@
                                 </td>
                                 <td>
                                     <div class="input-group quantity mt-4" style="width: 100px;">
-                                        {{-- Form update qty --}}
-                                        <form action="{{ route('cart.update', $id) }}" method="POST" class="d-flex">
-                                            @csrf
-                                            <button type="submit" name="qty" value="{{ $item['qty'] - 1 }}"
-                                                class="btn btn-sm btn-minus rounded-circle bg-light border">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                            <input type="text" readonly
-                                                class="form-control form-control-sm text-center border-0"
-                                                value="{{ $item['qty'] }}">
-                                            <button type="submit" name="qty" value="{{ $item['qty'] + 1 }}"
-                                                class="btn btn-sm btn-plus rounded-circle bg-light border">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </form>
-
+                                        <button type="button" class="btn btn-sm btn-minus rounded-circle bg-light border"
+                                            onclick="updateQty({{ $id }}, {{ max(1, $item['qty'] - 1) }})">
+                                            <i class="fa fa-minus"></i>
+                                        </button>
+                                        <input type="text" readonly
+                                            class="form-control form-control-sm text-center border-0"
+                                            value="{{ $item['qty'] }}">
+                                        <button type="button" class="btn btn-sm btn-plus rounded-circle bg-light border"
+                                            onclick="updateQty({{ $id }}, {{ $item['qty'] + 1 }})">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
                                     </div>
                                 </td>
                                 <td>
@@ -57,14 +52,12 @@
                                     </p>
                                 </td>
                                 <td>
-                                    {{-- Form hapus item --}}
                                     <form action="{{ route('cart.remove', $id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         <button type="submit" class="btn btn-md rounded-circle bg-light border mt-4">
                                             <i class="fa fa-times text-danger"></i>
                                         </button>
                                     </form>
-
                                 </td>
                             </tr>
                         @empty
@@ -82,7 +75,6 @@
                 $total = $subtotal + $tax;
             @endphp
 
-            {{-- Bagian total/subtotal/pajak (dipertahankan desainnya) --}}
             <div class="row g-4 justify-content-end mt-1">
                 <div class="col-8"></div>
                 <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
@@ -117,4 +109,23 @@
             </div>
         </div>
     </div>
+
+    {{-- Script AJAX untuk update qty --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+
+    <script>
+        function updateQty(id, qty) {
+            $.ajax({
+                url: '/cart/update/' + id,
+                type: 'POST',
+                data: {
+                    qty: qty,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function() {
+                    location.reload();
+                }
+            });
+        }
+    </script>
 @endsection

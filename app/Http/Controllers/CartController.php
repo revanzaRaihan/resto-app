@@ -45,7 +45,7 @@ public function updateQty(Request $request, $id)
     }
 
     session(['cart' => $cart]);
-    return redirect()->route('cart.show');
+    return redirect()->route('cart');
 }
 
 public function remove($id)
