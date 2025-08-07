@@ -98,7 +98,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        <div class="mb-0 mb-3">
+                        <div class="mb-3">
                             <a href="{{ route('checkout') }}"
                                 class="btn border-secondary py-3 text-primary text-uppercase mb-4" type="button">
                                 Lanjut ke Pembayaran
@@ -111,7 +111,7 @@
     </div>
 
     {{-- Script AJAX untuk update qty --}}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         function updateQty(id, qty) {
