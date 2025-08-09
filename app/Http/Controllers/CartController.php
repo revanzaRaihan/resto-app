@@ -45,10 +45,26 @@ public function updateQty(Request $request, $id)
     }
 
     session(['cart' => $cart]);
+
+    if ($request->ajax()) {
+        // Hitung ulang subtotal dan total untuk dikirim balik
+        $subtotal = collect($cart)->sum(fn($item) => $item['price'] * $item['qty']);
+        $tax = $subtotal * 0.1;
+        $total = $subtotal + $tax;
+
+        return response()->json([
+            'success' => true,
+            'cart' => $cart,
+            'subtotal' => $subtotal,
+            'tax' => $tax,
+            'total' => $total
+        ]);
+    }
+
     return redirect()->route('cart');
 }
 
-public function remove($id)
+public function remove(Request $request, $id)
 {
     $cart = session()->get('cart', []);
 
@@ -57,6 +73,21 @@ public function remove($id)
     }
 
     session(['cart' => $cart]);
+
+    if ($request->ajax()) {
+        $subtotal = collect($cart)->sum(fn($item) => $item['price'] * $item['qty']);
+        $tax = $subtotal * 0.1;
+        $total = $subtotal + $tax;
+
+        return response()->json([
+            'success' => true,
+            'cart' => $cart,
+            'subtotal' => $subtotal,
+            'tax' => $tax,
+            'total' => $total
+        ]);
+    }
+
     return redirect()->route('cart');
 }
 

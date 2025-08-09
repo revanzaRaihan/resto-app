@@ -21,7 +21,8 @@
                                 <th scope="row">
                                     <div class="d-flex align-items-center">
                                         <img src="{{ $item['img'] ?? 'https://images.unsplash.com/photo-1591325418441-ff678baf78ef' }}"
-                                            class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
+                                            class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;"
+                                            alt="">
                                     </div>
                                 </th>
                                 <td>
@@ -30,20 +31,26 @@
                                 <td>
                                     <p class="mb-0 mt-4">Rp{{ number_format($item['price'], 0, ',', '.') }},00</p>
                                 </td>
-                                <td>
-                                    <div class="input-group quantity mt-4" style="width: 100px;">
-                                        <button type="button" class="btn btn-sm btn-minus rounded-circle bg-light border"
-                                            onclick="updateQty({{ $id }}, {{ $item['qty'] - 1 }})">
-                                            <i class="fa fa-minus"></i>
-                                        </button>
-                                        <input type="text" readonly class="form-control form-control-sm text-center border-0"
-                                            value="{{ $item['qty'] }}">
-                                        <button type="button" class="btn btn-sm btn-plus rounded-circle bg-light border"
-                                            onclick="updateQty({{ $id }}, {{ $item['qty'] + 1 }})">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </td>
+                                <td class="align-middle">
+    <div class="d-flex align-items-center">
+        <button type="button"
+            class="btn btn-sm btn-minus rounded-circle bg-light border"
+            onclick="updateQty({{ $id }}, parseInt(this.closest('tr').querySelector('input').value) - 1)">
+            <i class="fa fa-minus"></i>
+        </button>
+
+        <input type="text" readonly
+            class="form-control form-control-sm text-center border-0 mx-1 qty-input"
+            value="{{ $item['qty'] }}">
+
+        <button type="button"
+            class="btn btn-sm btn-plus rounded-circle bg-light border"
+            onclick="updateQty({{ $id }}, parseInt(this.closest('tr').querySelector('input').value) + 1)">
+            <i class="fa fa-plus"></i>
+        </button>
+    </div>
+</td>
+
                                 <td>
                                     <p class="mb-0 mt-4">
                                         Rp{{ number_format($item['price'] * $item['qty'], 0, ',', '.') }},00
@@ -81,18 +88,18 @@
                             <h2 class="display-6 mb-4">Total <span class="fw-normal">Pesanan</span></h2>
                             <div class="d-flex justify-content-between mb-4">
                                 <h5 class="mb-0 me-4">Subtotal</h5>
-                                <p class="mb-0">Rp{{ number_format($subtotal, 0, ',', '.') }},00</p>
+                                <p class="mb-0 subtotal">Rp{{ number_format($subtotal, 0, ',', '.') }},00</p>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <p class="mb-0 me-4">Pajak (10%)</p>
                                 <div class="">
-                                    <p class="mb-0">Rp{{ number_format($tax, 0, ',', '.') }},00</p>
+                                    <p class="mb-0 tax">Rp{{ number_format($tax, 0, ',', '.') }},00</p>
                                 </div>
                             </div>
                         </div>
                         <div class="py-4 mb-4 border-top d-flex justify-content-between">
                             <h4 class="mb-0 ps-4 me-4">Total</h4>
-                            <h5 class="mb-0 pe-4">Rp{{ number_format($total, 0, ',', '.') }},00</h5>
+                            <h5 class="mb-0 pe-4 grandtotal">Rp{{ number_format($total, 0, ',', '.') }},00</h5>
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
@@ -113,28 +120,6 @@
 
     <script>
         function updateQty(id, qty) {
-            if (qty == null) {
-                fetch(`/cart/remove/${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({}) // Jika butuh kirim data tambahan, isi di sini
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            // Berhasil
-                            console.log('Item removed');
-                            location.reload(); // Refresh halaman setelah berhasil menghapus item
-                            // Lakukan refresh atau update UI
-                        } else {
-                            // Gagal
-                            console.error('Failed to remove item');
-                        }
-                    })
-                return;
-            }
             $.ajax({
                 url: '/cart/update/' + id,
                 type: 'POST',
@@ -142,8 +127,26 @@
                     qty: qty,
                     _token: '{{ csrf_token() }}'
                 },
-                success: function () {
-                    location.reload();
+                success: function(res) {
+                    if (res.success) {
+                        // Update qty di input
+                        const row = $('button[onclick*="updateQty(' + id + '"]').closest('tr');
+                        row.find('input').val(res.cart[id] ? res.cart[id].qty : 0);
+
+                        // Update total per item
+                        if (res.cart[id]) {
+                            const newTotal = (res.cart[id].price * res.cart[id].qty)
+                                .toLocaleString('id-ID');
+                            row.find('td:nth-child(5) p').text('Rp' + newTotal + ',00');
+                        } else {
+                            row.remove();
+                        }
+
+                        // Update subtotal, pajak, dan total
+                        $('.subtotal').text('Rp' + res.subtotal.toLocaleString('id-ID') + ',00');
+                        $('.tax').text('Rp' + res.tax.toLocaleString('id-ID') + ',00');
+                        $('.grandtotal').text('Rp' + res.total.toLocaleString('id-ID') + ',00');
+                    }
                 }
             });
         }
