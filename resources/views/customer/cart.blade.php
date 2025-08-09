@@ -16,60 +16,69 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($cart as $id => $item)
+                        @if (count($cart) > 0)
+                            @forelse($cart as $id => $item)
+                                <tr>
+                                    <th scope="row">
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ $item['img'] ?? 'https://images.unsplash.com/photo-1591325418441-ff678baf78ef' }}"
+                                                class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;"
+                                                alt="">
+                                        </div>
+                                    </th>
+                                    <td>
+                                        <p class="mb-0 mt-4">{{ $item['name'] }}</p>
+                                    </td>
+                                    <td>
+                                        <p class="mb-0 mt-4">Rp{{ number_format($item['price'], 0, ',', '.') }},00</p>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="d-flex align-items-center">
+                                            <button type="button"
+                                                class="btn btn-sm btn-minus rounded-circle bg-light border"
+                                                onclick="updateQty({{ $id }}, parseInt(this.closest('tr').querySelector('input').value) - 1)">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+
+                                            <input type="text" readonly
+                                                class="form-control form-control-sm text-center border-0 mx-1 qty-input"
+                                                value="{{ $item['qty'] }}">
+
+                                            <button type="button"
+                                                class="btn btn-sm btn-plus rounded-circle bg-light border"
+                                                onclick="updateQty({{ $id }}, parseInt(this.closest('tr').querySelector('input').value) + 1)">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <p class="mb-0 mt-4">
+                                            Rp{{ number_format($item['price'] * $item['qty'], 0, ',', '.') }},00
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <form action="{{ route('cart.remove', $id) }}" method="POST"
+                                            style="display:inline;">
+                                            @csrf
+                                            <button type="submit" class="btn btn-md rounded-circle bg-light border mt-4">
+                                                <i class="fa fa-times text-danger"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center">Keranjang kosong.</td>
+                                </tr>
+                            @endforelse
+                        @else
                             <tr>
-                                <th scope="row">
-                                    <div class="d-flex align-items-center">
-                                        <img src="{{ $item['img'] ?? 'https://images.unsplash.com/photo-1591325418441-ff678baf78ef' }}"
-                                            class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;"
-                                            alt="">
-                                    </div>
-                                </th>
-                                <td>
-                                    <p class="mb-0 mt-4">{{ $item['name'] }}</p>
-                                </td>
-                                <td>
-                                    <p class="mb-0 mt-4">Rp{{ number_format($item['price'], 0, ',', '.') }},00</p>
-                                </td>
-                                <td class="align-middle">
-    <div class="d-flex align-items-center">
-        <button type="button"
-            class="btn btn-sm btn-minus rounded-circle bg-light border"
-            onclick="updateQty({{ $id }}, parseInt(this.closest('tr').querySelector('input').value) - 1)">
-            <i class="fa fa-minus"></i>
-        </button>
-
-        <input type="text" readonly
-            class="form-control form-control-sm text-center border-0 mx-1 qty-input"
-            value="{{ $item['qty'] }}">
-
-        <button type="button"
-            class="btn btn-sm btn-plus rounded-circle bg-light border"
-            onclick="updateQty({{ $id }}, parseInt(this.closest('tr').querySelector('input').value) + 1)">
-            <i class="fa fa-plus"></i>
-        </button>
-    </div>
-</td>
-
-                                <td>
-                                    <p class="mb-0 mt-4">
-                                        Rp{{ number_format($item['price'] * $item['qty'], 0, ',', '.') }},00
-                                    </p>
-                                </td>
-                                <td>
-                                    <form action="{{ route('cart.remove', $id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        <button type="submit" class="btn btn-md rounded-circle bg-light border mt-4">
-                                            <i class="fa fa-times text-danger"></i>
-                                        </button>
-                                    </form>
+                                <td colspan="6" class="text-center text-muted">
+                                    Silakan masukkan pesanan dulu 🍜
                                 </td>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center">Keranjang kosong.</td>
-                            </tr>
-                        @endforelse
+                        @endif
                     </tbody>
                 </table>
             </div>
