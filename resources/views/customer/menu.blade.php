@@ -41,6 +41,12 @@
                                     </div>
                                 @endforeach
                             </div>
+
+                            {{-- Tambahkan navigasi pagination --}}
+                            <div class="mt-4 d-flex justify-content-center">
+                                {{ $items->links('pagination::bootstrap-5') }}
+                            </div>
+
                         </div>
                     </div>
                 </div>

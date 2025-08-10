@@ -466,29 +466,47 @@
 
 /*** Single Page Start ***/
 .pagination {
+    display: flex !important;
+    justify-content: center;
+    flex-wrap: wrap;
+    list-style: none;
+    padding-left: 0;
+}
+
+p.small.text-muted {
+    display: none !important;
+}
+
+
+
+.pagination li {
     display: inline-block;
+    margin: 0 2px;
 }
 
-.pagination a {
-    color: var(--bs-dark);
-    padding: 10px 16px;
+.pagination li a,
+.pagination li span {
+    display: block;
+    padding: 6px 12px;
+    color: #28a745; /* warna hijau contoh */
+    background-color: #fff;
+    border: 1px solid #dee2e6;
     text-decoration: none;
-    transition: 0.5s;
-    border: 1px solid var(--bs-secondary);
-    margin: 0 4px;
+    border-radius: 4px;
 }
 
-.pagination a.active {
-    background-color: var(--bs-primary);
-    color: var(--bs-light);
-    border: 1px solid var(--bs-secondary);
+.pagination li.active span {
+    background-color: #28a745;
+    color: white;
+    border-color: #28a745;
 }
 
-.pagination a:hover:not(.active) {background-color: var(--bs-primary)}
-
-.nav.nav-tabs .nav-link.active {
-    border-bottom: 2px solid var(--bs-secondary) !important;
+.pagination li.disabled span {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
 }
+
 /*** Single Page End ***/
 
 
